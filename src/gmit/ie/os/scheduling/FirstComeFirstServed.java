@@ -46,4 +46,13 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
+    
+	@Override
+	public List<Double> getProcessWaitTimes() {
+		List<Double> averages = new ArrayList<>();
+		for (MyProcess process : processes){
+			averages.add((double)process.getWaitTime());
+		}
+		return averages;
+	}
 }

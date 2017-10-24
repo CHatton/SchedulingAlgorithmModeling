@@ -32,10 +32,9 @@ public class RoundRobin implements SchedulingAlgorithm {
         int currentTime = 0;
 
         while (!finished()) {
-            List<MyProcess> liveProcesses = this.processes
-                    .stream()
+            List<MyProcess> liveProcesses = this.processes.stream()
                     .filter(MyProcess::isAlive) // get all processes that are still alive
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList()); // get them as a list
 
             for (MyProcess process : liveProcesses) {
                 // cycle duration is the lower of the remaining time and quantum.
@@ -70,4 +69,13 @@ public class RoundRobin implements SchedulingAlgorithm {
 
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
+
+	@Override
+	public List<Double> getProcessWaitTimes() {
+		List<Double> averages = new ArrayList<>();
+		for (MyProcess process : processes){
+			averages.add(calcProcessAverage(process));
+		}
+		return averages;
+	}
 }
