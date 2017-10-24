@@ -6,6 +6,7 @@ import gmit.ie.os.MyProcess;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 public class FirstComeFirstServed implements SchedulingAlgorithm {
 
@@ -21,19 +22,19 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
     public List<CPUCycle> execute() {
         cycles.clear(); // every run will be a fresh list of cycles.
 
-        int currentTime = 0; // assuming every process arrives at t=0
-        for (MyProcess process : processes) {
+        int currentTime = 0; // assuming every process arrives at t=0.
+        for (MyProcess process : processes) { // looking at every process.
 
             int duration = process.getBurstTime(); // process takes up the full burst time in FCFS
 
-            process.setWaitTime(currentTime)
-            	.operateOnFor(duration);
+            process.setWaitTime(currentTime) // process has been waiting until now.
+                    .operateOnFor(duration); // work on the process for the full burst time.
 
             cycles.add(new CPUCycle(process, currentTime, duration)); // create a new CPU Cycle.
-            currentTime += duration;
+            currentTime += duration; // we are now a full burst time ahead.
         }
 
-        return new ArrayList<>(cycles);
+        return new ArrayList<>(cycles); // defensive copy.
     }
 
     @Override
@@ -46,13 +47,16 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
-    
-	@Override
-	public List<Double> getProcessWaitTimes() {
-		List<Double> averages = new ArrayList<>();
-		for (MyProcess process : processes){
-			averages.add((double)process.getWaitTime());
-		}
-		return averages;
-	}
+
+    @Override
+    public List<Integer> getProcessWaitTimes() {
+        return processes.stream()
+                .map(MyProcess::getWaitTime) // get every wait time
+                .collect(Collectors.toList()); // collect it as a list.
+    }
+
+    @Override
+    public String getName() {
+        return "First Come First Served";
+    }
 }

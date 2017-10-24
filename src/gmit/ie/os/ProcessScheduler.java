@@ -85,7 +85,7 @@ public class ProcessScheduler {
             System.out.println(String.format("%-15s %-15s %-15s %-15s\n",
                     "Process Name", "Start Time", "Remaining Time", "Wait Time"));
             algorithm.execute().forEach(System.out::println);
-            List<Double> averageWaitTimes = algorithm.getProcessWaitTimes();
+            List<Integer> averageWaitTimes = algorithm.getProcessWaitTimes();
             
             System.out.println();
             // the index "i" lines up the processes with the averages.
@@ -94,7 +94,7 @@ public class ProcessScheduler {
             }
             
             System.out.println();
-            System.out.printf("Average wait time for scheduling algorithm.: %.2f", algorithm.averageWaitTime());
+            System.out.printf("Average wait time for %s: %.2f", algorithm.getName(), algorithm.averageWaitTime());
             System.out.println();
             System.out.println("=========================================================");
         }

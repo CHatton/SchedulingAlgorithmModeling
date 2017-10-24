@@ -71,11 +71,16 @@ public class RoundRobin implements SchedulingAlgorithm {
     }
 
 	@Override
-	public List<Double> getProcessWaitTimes() {
-		List<Double> averages = new ArrayList<>();
+	public List<Integer> getProcessWaitTimes() {
+		List<Integer> averages = new ArrayList<>();
 		for (MyProcess process : processes){
-			averages.add(calcProcessAverage(process));
+			averages.add((int)calcProcessAverage(process));
 		}
 		return averages;
 	}
+
+    @Override
+    public String getName() {
+        return "Round Robin";
+    }
 }
