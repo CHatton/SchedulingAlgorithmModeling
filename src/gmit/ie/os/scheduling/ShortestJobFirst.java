@@ -16,11 +16,11 @@ public class ShortestJobFirst implements SchedulingAlgorithm {
 
     public ShortestJobFirst(final List<MyProcess> processes) {
         // sorted version of the processes based on burst time
-        List<MyProcess> sortedProcesses = processes
-                .stream()
-                .sorted(Comparator.comparingInt(MyProcess::getBurstTime))// sort by burst time (low -> high)
+        List<MyProcess> sortedProcesses = processes.stream()
+                .sorted(Comparator.comparingInt(MyProcess::getBurstTime)) // sort by burst time (low -> high)
                 .collect(Collectors.toList());  // get it as a list
-
+        
+        // with sorted processes SJF is identical to FCFS
         this.fcfs = new FirstComeFirstServed(sortedProcesses);
 
     }

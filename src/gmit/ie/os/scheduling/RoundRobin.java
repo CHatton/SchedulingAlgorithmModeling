@@ -29,7 +29,7 @@ public class RoundRobin implements SchedulingAlgorithm {
     @Override
     public List<CPUCycle> execute() {
         cycles.clear();
-        int currentTime = 0;
+        int currentTime = 0; // assume all processes start at t=0
 
         while (!finished()) {
             List<MyProcess> liveProcesses = this.processes.stream()
@@ -41,14 +41,15 @@ public class RoundRobin implements SchedulingAlgorithm {
                 int cycleDuration = process.getRemainingTime() < quantum
                         ? process.getRemainingTime() : quantum;
 
-                process.setWaitTime(currentTime);
-                process.operateOnFor(cycleDuration);
+                process.setWaitTime(currentTime)
+                	.operateOnFor(cycleDuration);
 
                 cycles.add(new CPUCycle(process, currentTime, cycleDuration));
                 currentTime += cycleDuration;
             }
         }
 
+        // defensive copy of arraylist.
         return new ArrayList<>(cycles);
     }
 
@@ -62,8 +63,7 @@ public class RoundRobin implements SchedulingAlgorithm {
 
     @Override
     public double averageWaitTime() {
-        OptionalDouble avg = processes
-                .stream()
+        OptionalDouble avg = processes.stream()
                 .mapToDouble(this::calcProcessAverage)
                 .average();
 

@@ -65,8 +65,9 @@ public class MyProcess { // called the class MyProcess to avoid clashing with ja
         return waitTime;
     }
 
-    public void setWaitTime(final int waitTime) {
+    public MyProcess setWaitTime(final int waitTime) {
         this.waitTime = waitTime;
+        return this;
     }
 
 }

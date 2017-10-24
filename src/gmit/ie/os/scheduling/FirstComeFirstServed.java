@@ -19,15 +19,15 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
     @Override
     public List<CPUCycle> execute() {
-        cycles.clear();
+        cycles.clear(); // every run will be a fresh list of cycles.
 
         int currentTime = 0; // assuming every process arrives at t=0
         for (MyProcess process : processes) {
 
             int duration = process.getBurstTime(); // process takes up the full burst time in FCFS
 
-            process.setWaitTime(currentTime);
-            process.operateOnFor(duration);
+            process.setWaitTime(currentTime)
+            	.operateOnFor(duration);
 
             cycles.add(new CPUCycle(process, currentTime, duration)); // create a new CPU Cycle.
             currentTime += duration;
@@ -40,7 +40,7 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
     public double averageWaitTime() {
         // should be called after execute.
         OptionalDouble avg = cycles.stream()
-                .map(CPUCycle::getProcess) // look at every process
+                .map(CPUCycle::getProcess) // look at every cpu cycle's process
                 .mapToDouble(MyProcess::getWaitTime) // get the wait times
                 .average(); // calc average of wait times
 
