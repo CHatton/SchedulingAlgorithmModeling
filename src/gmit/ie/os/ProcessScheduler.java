@@ -14,9 +14,6 @@ public class ProcessScheduler {
 
     private final Scanner sc; // read in user input
     private List<MyProcess> processes; // the list of processes that will be operated on by the scheduling algorithms.
-
-    // the currently active algorithm that will be applied to the processes.
-    private SchedulingAlgorithm algorithm;
     private boolean keepRunning; // flag to keep the program running.
 
     public ProcessScheduler() {
@@ -25,7 +22,8 @@ public class ProcessScheduler {
         keepRunning = true;
     }
 
-    private int readInt() {
+    private int promptForInt(String prompt) {
+        System.out.println(prompt);
         int num = sc.nextInt();
         sc.nextLine(); // swallow new line character
         return num;
@@ -42,9 +40,9 @@ public class ProcessScheduler {
                 // done adding processes.
                 return;
             }
-            System.out.print("Enter process burst time. ");
-            int burstTime = readInt();
+            int burstTime = promptForInt("Enter process burst time. ");
 
+            // the process will be operated on by the algorithm.
             processes.add(new MyProcess(name, burstTime));
         }
     }
@@ -55,9 +53,7 @@ public class ProcessScheduler {
         System.out.println("2 - Shorted Job First (SJF)");
         System.out.println("3 - Round Robin (RR)");
         System.out.println("4 - Exit.");
-
-        int choice = readInt();
-
+        int choice = promptForInt("");
         while (true){
             switch (choice) {
                 case 1:
@@ -65,8 +61,7 @@ public class ProcessScheduler {
                 case 2:
                     return new ShortestJobFirst(processes);
                 case 3:
-                    System.out.println("Enter quantum for Round Robin.");
-                    int quantum = readInt();
+                    int quantum = promptForInt("Enter quantum for Round Robin.");
                     return new RoundRobin(processes, quantum);
                 case 4:
                     // represents "no" algorithm chosen, instead of using null
@@ -79,7 +74,7 @@ public class ProcessScheduler {
 
     public void start() {
         fillProcesses();
-        algorithm = chooseAlgorithm();
+        SchedulingAlgorithm algorithm = chooseAlgorithm();
         if (keepRunning) {
             System.out.println("=========================================================");
             System.out.println(String.format("%-15s %-15s %-15s %-15s\n",

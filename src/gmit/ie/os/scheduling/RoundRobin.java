@@ -29,10 +29,10 @@ public class RoundRobin implements SchedulingAlgorithm {
     @Override
     public List<CPUCycle> execute() {
         cycles.clear();
-        int currentTime = 0; // assume all processes start at t=0
+        int currentTime = 0; // assumption that all processes start at t=0
 
         while (!finished()) {
-            List<MyProcess> liveProcesses = this.processes.stream()
+            List<MyProcess> liveProcesses = processes.stream()
                     .filter(MyProcess::isAlive) // get all processes that are still alive
                     .collect(Collectors.toList()); // get them as a list
 
@@ -41,15 +41,15 @@ public class RoundRobin implements SchedulingAlgorithm {
                 int cycleDuration = process.getRemainingTime() < quantum
                         ? process.getRemainingTime() : quantum;
 
-                process.setWaitTime(currentTime)
-                	.operateOnFor(cycleDuration);
+                process.setWaitTime(currentTime) // process has been waiting for this long
+                        .operateOnFor(cycleDuration); // perform the actual "operations" on the process.
 
-                cycles.add(new CPUCycle(process, currentTime, cycleDuration));
-                currentTime += cycleDuration;
+                cycles.add(new CPUCycle(process, currentTime, cycleDuration)); // save the cpu cycle.
+                currentTime += cycleDuration; // one more duration has passed.
             }
         }
 
-        // defensive copy of arraylist.
+        // defensive copy of array list.
         return new ArrayList<>(cycles);
     }
 
@@ -63,6 +63,8 @@ public class RoundRobin implements SchedulingAlgorithm {
 
     @Override
     public double averageWaitTime() {
+        // double precision will be more accurate
+        // than the list of Integers given back from "getProcessWaitTime"
         OptionalDouble avg = processes.stream()
                 .mapToDouble(this::calcProcessAverage)
                 .average();
@@ -70,14 +72,14 @@ public class RoundRobin implements SchedulingAlgorithm {
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
 
-	@Override
-	public List<Integer> getProcessWaitTimes() {
-		List<Integer> averages = new ArrayList<>();
-		for (MyProcess process : processes){
-			averages.add((int)calcProcessAverage(process));
-		}
-		return averages;
-	}
+    @Override
+    public List<Integer> getProcessWaitTimes() {
+        return processes.stream().map(this::calcProcessAverage)
+                // need to case the double value as an int to get a list of integers
+                // will lose some precision casting to int.
+                .map(num -> (int) num.doubleValue())
+                .collect(Collectors.toList()); // get them back as a list
+    }
 
     @Override
     public String getName() {
