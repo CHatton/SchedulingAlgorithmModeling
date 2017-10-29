@@ -1,15 +1,15 @@
 package gmit.ie.os;
 
 public class CPUCycle {
-    private final MyProcess process;
+    private final Process process;
     private final int startTime;
 
-    public CPUCycle(final MyProcess process, int startTime, int duration) {
-        this.process = new MyProcess(process);
+    public CPUCycle(final Process process, int startTime, int duration) {
+        this.process = new Process(process);
         this.startTime = startTime;
     }
 
-    public MyProcess getProcess() {
+    public Process getProcess() {
         return process;
     }
 

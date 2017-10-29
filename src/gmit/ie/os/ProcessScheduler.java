@@ -12,13 +12,13 @@ import java.util.Scanner;
 
 public class ProcessScheduler {
 
-    private final Scanner sc; // read in user input
-    private List<MyProcess> processes; // the list of processes that will be operated on by the scheduling algorithms.
+    private final Scanner sc; // read in input
+    private List<Process> processes; // the list of processes that will be operated on by the scheduling algorithms.
     private boolean keepRunning; // flag to keep the program running.
 
-    public ProcessScheduler() {
+    public ProcessScheduler(Scanner sc) { // take scanner as parameter so you can also pass in a Scanner made from a file, not always System.in
         processes = new ArrayList<>();
-        sc = new Scanner(System.in);
+        this.sc = sc;
         keepRunning = true;
     }
 
@@ -43,7 +43,7 @@ public class ProcessScheduler {
             int burstTime = promptForInt("Enter process burst time. ");
 
             // the process will be operated on by the algorithm.
-            processes.add(new MyProcess(name, burstTime));
+            processes.add(new Process(name, burstTime));
         }
     }
 

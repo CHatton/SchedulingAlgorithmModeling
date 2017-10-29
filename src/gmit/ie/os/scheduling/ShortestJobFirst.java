@@ -1,7 +1,7 @@
 package gmit.ie.os.scheduling;
 
 import gmit.ie.os.CPUCycle;
-import gmit.ie.os.MyProcess;
+import gmit.ie.os.Process;
 
 import java.util.Comparator;
 import java.util.List;
@@ -13,12 +13,12 @@ public class ShortestJobFirst implements SchedulingAlgorithm {
     // sjf is the same as fcfs with the processes sorted by burst time.
     private final FirstComeFirstServed fcfs;
 
-    public ShortestJobFirst(final List<MyProcess> processes) {
+    public ShortestJobFirst(final List<Process> processes) {
         // sorted version of the processes based on burst time
-        List<MyProcess> sortedProcesses = processes.stream()
-                .sorted(Comparator.comparingInt(MyProcess::getBurstTime)) // sort by burst time (low -> high)
+        List<Process> sortedProcesses = processes.stream()
+                .sorted(Comparator.comparingInt(Process::getBurstTime)) // sort by burst time (low -> high)
                 .collect(Collectors.toList());  // get it as a list
-        
+
         // with sorted processes SJF is identical to FCFS
         this.fcfs = new FirstComeFirstServed(sortedProcesses);
 

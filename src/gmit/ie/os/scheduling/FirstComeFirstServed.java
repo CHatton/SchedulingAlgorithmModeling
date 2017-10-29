@@ -1,7 +1,7 @@
 package gmit.ie.os.scheduling;
 
 import gmit.ie.os.CPUCycle;
-import gmit.ie.os.MyProcess;
+import gmit.ie.os.Process;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 public class FirstComeFirstServed implements SchedulingAlgorithm {
 
-    private final List<MyProcess> processes;
+    private final List<Process> processes;
     private final List<CPUCycle> cycles;
 
-    public FirstComeFirstServed(final List<MyProcess> processes) {
+    public FirstComeFirstServed(final List<Process> processes) {
         this.processes = new ArrayList<>(processes);
         this.cycles = new ArrayList<>();
     }
@@ -23,7 +23,7 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
         cycles.clear(); // every run will be a fresh list of cycles.
 
         int currentTime = 0; // assuming every process arrives at t=0.
-        for (MyProcess process : processes) { // looking at every process.
+        for (Process process : processes) { // looking at every process.
 
             int duration = process.getBurstTime(); // process takes up the full burst time in FCFS
 
@@ -40,10 +40,9 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
     @Override
     public double averageWaitTime() {
         // should be called after execute.
-        OptionalDouble avg = cycles.stream()
-                .map(CPUCycle::getProcess) // look at every cpu cycle's process
-                .mapToDouble(MyProcess::getWaitTime) // get the wait times
-                .average(); // calc average of wait times
+        OptionalDouble avg = processes.stream()
+                .mapToDouble(Process::getWaitTime)
+                .average();
 
         return avg.isPresent() ? avg.getAsDouble() : 0;
     }
@@ -51,7 +50,7 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
     @Override
     public List<Integer> getProcessWaitTimes() {
         return processes.stream()
-                .map(MyProcess::getWaitTime) // get every wait time
+                .map(Process::getWaitTime) // get every wait time
                 .collect(Collectors.toList()); // collect it as a list.
     }
 

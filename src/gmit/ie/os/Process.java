@@ -1,6 +1,6 @@
 package gmit.ie.os;
 
-public class MyProcess { // called the class MyProcess to avoid clashing with java.lang.Process
+public class Process {
 
     // name and burst time will never change so can make them final
     private final String name;
@@ -13,7 +13,7 @@ public class MyProcess { // called the class MyProcess to avoid clashing with ja
     private int numCycles;
 
     // copy constructor.
-    public MyProcess(final MyProcess process) {
+    public Process(final Process process) {
         this.name = process.name;
         this.burstTime = process.burstTime;
         this.startTime = process.startTime;
@@ -22,7 +22,7 @@ public class MyProcess { // called the class MyProcess to avoid clashing with ja
         this.numCycles = process.numCycles;
     }
 
-    public MyProcess(final String name, final int burstTime) {
+    public Process(final String name, final int burstTime) {
         this.name = name;
         this.burstTime = burstTime;
         this.remainingTime = burstTime; // all the time is remaining.
@@ -65,7 +65,7 @@ public class MyProcess { // called the class MyProcess to avoid clashing with ja
         return waitTime;
     }
 
-    public MyProcess setWaitTime(final int waitTime) {
+    public Process setWaitTime(final int waitTime) {
         this.waitTime = waitTime;
         return this;
     }

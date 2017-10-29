@@ -1,7 +1,7 @@
 package gmit.ie.os.scheduling;
 
 import gmit.ie.os.CPUCycle;
-import gmit.ie.os.MyProcess;
+import gmit.ie.os.Process;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 public class RoundRobin implements SchedulingAlgorithm {
 
-    private final List<MyProcess> processes;
+    private final List<Process> processes;
     private final List<CPUCycle> cycles;
     private final int quantum;
 
-    public RoundRobin(final List<MyProcess> processes, final int quantum) {
+    public RoundRobin(final List<Process> processes, final int quantum) {
         this.processes = new ArrayList<>(processes);
         this.cycles = new ArrayList<>();
         this.quantum = quantum;
@@ -23,7 +23,7 @@ public class RoundRobin implements SchedulingAlgorithm {
 
     private boolean finished() {
         // algorithm is finished running if no process is alive.
-        return processes.stream().noneMatch(MyProcess::isAlive);
+        return processes.stream().noneMatch(Process::isAlive);
     }
 
     @Override
@@ -32,11 +32,11 @@ public class RoundRobin implements SchedulingAlgorithm {
         int currentTime = 0; // assumption that all processes start at t=0
 
         while (!finished()) {
-            List<MyProcess> liveProcesses = processes.stream()
-                    .filter(MyProcess::isAlive) // get all processes that are still alive
+            List<Process> liveProcesses = processes.stream()
+                    .filter(Process::isAlive) // get all processes that are still alive
                     .collect(Collectors.toList()); // get them as a list
 
-            for (MyProcess process : liveProcesses) {
+            for (Process process : liveProcesses) {
                 // cycle duration is the lower of the remaining time and quantum.
                 int cycleDuration = process.getRemainingTime() < quantum
                         ? process.getRemainingTime() : quantum;
@@ -53,7 +53,7 @@ public class RoundRobin implements SchedulingAlgorithm {
         return new ArrayList<>(cycles);
     }
 
-    private double calcProcessAverage(MyProcess process) { // use the formula "last time ran - quantum x num cycles"
+    private double calcProcessAverage(Process process) { // use the formula "last time ran - quantum x num cycles"
         // wait time will be the last time it ran.
         // num cycles gets updated ever time that time is deducted from the process.
         // -1 because we don't count the last cycle as wait time.
