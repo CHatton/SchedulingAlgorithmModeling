@@ -5,17 +5,18 @@ import gmit.ie.os.Process;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 public class FirstComeFirstServed implements SchedulingAlgorithm {
 
     private final List<Process> processes;
     private final List<CPUCycle> cycles;
+    private final String name;
 
     public FirstComeFirstServed(final List<Process> processes) {
         this.processes = new ArrayList<>(processes);
-        this.cycles = new ArrayList<>();
+        cycles = new ArrayList<>();
+        name = "First Come First Served";
     }
 
     @Override
@@ -39,12 +40,11 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
     @Override
     public double averageWaitTime() {
-        // should be called after execute.
-        OptionalDouble avg = processes.stream()
+        // should be called after execute for reliable results.
+        return processes.stream()
                 .mapToDouble(Process::getWaitTime)
-                .average();
-
-        return avg.isPresent() ? avg.getAsDouble() : 0;
+                .average() // calculate the average wait time
+                .orElse(0); // default value of 0.
     }
 
     @Override
@@ -56,6 +56,6 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
     @Override
     public String getName() {
-        return "First Come First Served";
+        return name;
     }
 }

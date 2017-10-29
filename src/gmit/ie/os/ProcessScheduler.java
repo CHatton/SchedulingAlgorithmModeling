@@ -1,7 +1,6 @@
 package gmit.ie.os;
 
 import gmit.ie.os.scheduling.FirstComeFirstServed;
-import gmit.ie.os.scheduling.NullSchedulingAlgorithm;
 import gmit.ie.os.scheduling.RoundRobin;
 import gmit.ie.os.scheduling.SchedulingAlgorithm;
 import gmit.ie.os.scheduling.ShortestJobFirst;
@@ -14,12 +13,10 @@ public class ProcessScheduler {
 
     private final Scanner sc; // read in input
     private List<Process> processes; // the list of processes that will be operated on by the scheduling algorithms.
-    private boolean keepRunning; // flag to keep the program running.
 
     public ProcessScheduler(Scanner sc) { // take scanner as parameter so you can also pass in a Scanner made from a file, not always System.in
         processes = new ArrayList<>();
         this.sc = sc;
-        keepRunning = true;
     }
 
     private int promptForInt(String prompt) {
@@ -33,6 +30,7 @@ public class ProcessScheduler {
     private void fillProcesses() {
         processes.clear(); // remove all existing processes.
         System.out.println("Enter process names and burst times. (type X when you're done adding processes.)");
+
         while (true) {
             System.out.print("Enter process name: ");
             String name = sc.nextLine();
@@ -40,11 +38,13 @@ public class ProcessScheduler {
                 // done adding processes.
                 return;
             }
+
             int burstTime = promptForInt("Enter process burst time. ");
 
-            // the process will be operated on by the algorithm.
+            // the process will be operated on by the chosen algorithm.
             processes.add(new Process(name, burstTime));
         }
+
     }
 
     private SchedulingAlgorithm chooseAlgorithm() {
@@ -54,7 +54,7 @@ public class ProcessScheduler {
         System.out.println("3 - Round Robin (RR)");
         System.out.println("4 - Exit.");
         int choice = promptForInt("");
-        while (true){
+        while (true) {
             switch (choice) {
                 case 1:
                     return new FirstComeFirstServed(processes);
@@ -64,10 +64,7 @@ public class ProcessScheduler {
                     int quantum = promptForInt("Enter quantum for Round Robin.");
                     return new RoundRobin(processes, quantum);
                 case 4:
-                    // represents "no" algorithm chosen, instead of using null
-                    // use a valid implementation of SchedulingAlgorithm that "does nothing"
-                    keepRunning = false;
-                    return new NullSchedulingAlgorithm();
+                    return null; // no algorithm should run - the program should exit.
             }
         }
     }
@@ -75,23 +72,28 @@ public class ProcessScheduler {
     public void start() {
         fillProcesses();
         SchedulingAlgorithm algorithm = chooseAlgorithm();
-        if (keepRunning) {
-            System.out.println("=========================================================");
-            System.out.println(String.format("%-15s %-15s %-15s %-15s\n",
-                    "Process Name", "Start Time", "Remaining Time", "Wait Time"));
+        if (algorithm != null) { // it's either RR, SJF or FCFS
+            System.out.println("======================================================================");
+            System.out.println(String.format("%-15s %-15s %-15s %-15s %-15s\n",
+                    "Process Name", "Start Time", "Remaining Time", "Wait Time", "Cycle Duration"));
+
+            // print out all the info about each CPUCycle.
             algorithm.execute().forEach(System.out::println);
+
+            // The wait times correspond to the processes provided.
             List<Integer> averageWaitTimes = algorithm.getProcessWaitTimes();
-            
+
             System.out.println();
+
             // the index "i" lines up the processes with the averages.
-            for(int i = 0; i < processes.size(); i++){
-            	System.out.println("Process: " + processes.get(i).getName() + " has average wait time of " + averageWaitTimes.get(i));
+            for (int i = 0; i < processes.size(); i++) {
+                System.out.println("Process: " + processes.get(i).getName() + " has average wait time of " + averageWaitTimes.get(i));
             }
-            
+
             System.out.println();
             System.out.printf("Average wait time for %s: %.2f", algorithm.getName(), algorithm.averageWaitTime());
             System.out.println();
-            System.out.println("=========================================================");
+            System.out.println("======================================================================");
         }
     }
 }

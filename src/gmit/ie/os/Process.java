@@ -7,7 +7,6 @@ public class Process {
     private final int burstTime;
 
     // not final as these will change
-    private int startTime;
     private int waitTime;
     private int remainingTime;
     private int numCycles;
@@ -16,7 +15,6 @@ public class Process {
     public Process(final Process process) {
         this.name = process.name;
         this.burstTime = process.burstTime;
-        this.startTime = process.startTime;
         this.waitTime = process.waitTime;
         this.remainingTime = process.remainingTime;
         this.numCycles = process.numCycles;
@@ -26,7 +24,6 @@ public class Process {
         this.name = name;
         this.burstTime = burstTime;
         this.remainingTime = burstTime; // all the time is remaining.
-        this.startTime = 0;
         this.waitTime = 0;
         this.numCycles = 0;
     }

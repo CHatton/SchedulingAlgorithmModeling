@@ -12,6 +12,7 @@ public class ShortestJobFirst implements SchedulingAlgorithm {
     // use an fcfs implementation to delegate the methods as
     // sjf is the same as fcfs with the processes sorted by burst time.
     private final FirstComeFirstServed fcfs;
+    private final String name;
 
     public ShortestJobFirst(final List<Process> processes) {
         // sorted version of the processes based on burst time
@@ -20,8 +21,8 @@ public class ShortestJobFirst implements SchedulingAlgorithm {
                 .collect(Collectors.toList());  // get it as a list
 
         // with sorted processes SJF is identical to FCFS
-        this.fcfs = new FirstComeFirstServed(sortedProcesses);
-
+        fcfs = new FirstComeFirstServed(sortedProcesses);
+        name = "Shortest Job First";
     }
 
     @Override
@@ -33,14 +34,14 @@ public class ShortestJobFirst implements SchedulingAlgorithm {
     public double averageWaitTime() {
         return fcfs.averageWaitTime();
     }
-    
-	@Override
-	public List<Integer> getProcessWaitTimes() {
-		return fcfs.getProcessWaitTimes();
-	}
+
+    @Override
+    public List<Integer> getProcessWaitTimes() {
+        return fcfs.getProcessWaitTimes();
+    }
 
     @Override
     public String getName() {
-        return "Shortest Job First";
+        return name;
     }
 }
