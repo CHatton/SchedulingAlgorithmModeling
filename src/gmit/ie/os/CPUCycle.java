@@ -17,10 +17,10 @@ public class CPUCycle {
 
     @Override
     public String toString() {
-        return String.format("%-15s %-15s %-15s %-15s %-15s",
+        return String.format("%-15s %-15s %-15s %-15s",
                 process.getName(), startTime,
-                process.isAlive() ? process.getRemainingTime() : "finished",
-                process.getWaitTime(), duration);
+                process.isAlive() ? process.getRemainingTime() : "finished"
+                , duration);
     }
 
 }

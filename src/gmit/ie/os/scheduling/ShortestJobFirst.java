@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class ShortestJobFirst implements SchedulingAlgorithm {
 
-    // use an fcfs implementation to delegate the methods as
+    // use an fcfs instance to delegate the methods to as
     // sjf is the same as fcfs with the processes sorted by burst time.
     private final FirstComeFirstServed fcfs;
     private final String name;

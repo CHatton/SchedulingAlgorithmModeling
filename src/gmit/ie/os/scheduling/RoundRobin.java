@@ -27,29 +27,6 @@ public class RoundRobin implements SchedulingAlgorithm {
         return processes.stream().noneMatch(Process::isAlive);
     }
 
-    @Override
-    public List<CPUCycle> execute() {
-        cycles.clear();
-        int currentTime = 0; // assumption that all processes start at t=0
-
-        while (!finished()) {
-            // with each iteration just consider the processes that are still alive.
-            for (Process process : liveProcesses()) {
-                // cycle duration is the lower of the remaining time and quantum.
-                int cycleDuration = getCycleDurationFor(process);
-
-                process.setWaitTime(currentTime) // process has been waiting for this long
-                        .operateOnFor(cycleDuration); // perform the actual "operations" on the process.
-
-                cycles.add(new CPUCycle(process, currentTime, cycleDuration)); // save the cpu cycle.
-                currentTime += cycleDuration; // one more duration has passed.
-            }
-        }
-
-        // defensive copy of array list.
-        return new ArrayList<>(cycles);
-    }
-
     private List<Process> liveProcesses() {
         // returns a filtered list of only the processes that are still alive.
         return processes.stream()
@@ -60,6 +37,25 @@ public class RoundRobin implements SchedulingAlgorithm {
     private int getCycleDurationFor(Process process) {
         // get the lower of the remaining time and quantum.
         return process.getRemainingTime() < quantum ? process.getRemainingTime() : quantum;
+    }
+
+    @Override
+    public List<CPUCycle> execute() {
+        int currentTime = 0; // assumption that all processes start at t=0
+        while (!finished()) {
+            // with each iteration just consider the processes that are still alive.
+            for (Process process : liveProcesses()) {
+
+                int cycleDuration = getCycleDurationFor(process); // lower of quantum or remaining time.
+
+                process.setWaitTime(currentTime) // process has been waiting for this long
+                        .operateOnFor(cycleDuration); // perform the actual "operations" on the process.
+
+                cycles.add(new CPUCycle(process, currentTime, cycleDuration)); // represent this operation as a new cpu cycle.
+                currentTime += cycleDuration; // one more duration has passed.
+            }
+        }
+        return new ArrayList<>(cycles); // defensive copy.
     }
 
     private double calcProcessAverage(Process process) { // use the formula "last time ran - quantum x num cycles"
@@ -81,10 +77,9 @@ public class RoundRobin implements SchedulingAlgorithm {
 
     @Override
     public List<Integer> getProcessWaitTimes() {
-        return processes.stream().map(this::calcProcessAverage)
-                // need to case the double value as an int to get a list of integers
-                // will lose some precision casting to int.
-                .map(num -> (int) num.doubleValue())
+        return processes.stream()
+                .map(this::calcProcessAverage)
+                .map(num -> (int) num.doubleValue())   // will lose some precision casting to int.
                 .collect(Collectors.toList()); // get them back as a list
     }
 

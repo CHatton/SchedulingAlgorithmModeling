@@ -21,7 +21,6 @@ public class FirstComeFirstServed implements SchedulingAlgorithm {
 
     @Override
     public List<CPUCycle> execute() {
-        cycles.clear(); // every run will be a fresh list of cycles.
 
         int currentTime = 0; // assuming every process arrives at t=0.
         for (Process process : processes) { // looking at every process.
